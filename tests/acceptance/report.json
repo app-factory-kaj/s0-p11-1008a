@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-08T00:00:00Z",
+  "commit": "32d81ec79be8a5c01bd40d376ebb1858b3ffdfae",
+  "baseUrl": "http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http",
+  "isolation": "greeter is a stateless, data-free GET endpoint with no sign-in and no shared container; each scenario issues its own independent request and asserts only on that request's own response",
+  "scenarios": [
+    {
+      "feature": "F1 Greeting",
+      "featureFile": "specs/validation/acceptance/F1-greeting.feature",
+      "line": 6,
+      "rule": "Requesting a greeting with a name returns that greeting",
+      "scenario": "Greeting a named caller",
+      "tags": ["@story-F1.1"],
+      "outcome": "passed",
+      "steps": [
+        { "text": "an API caller requests a greeting for \"Ada\"", "keyword": "When",
+          "command": "curl -s -w '\\nSTATUS:%{http_code}\\n' 'http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http/hello?name=Ada'",
+          "exit": 0, "observed": "HTTP 200, body {\"message\":\"Hello, Ada!\"}" },
+        { "text": "the response is a JSON greeting of \"Hello, Ada!\"", "keyword": "Then",
+          "command": "curl -s 'http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http/hello?name=Ada' | grep -q '\"message\":\"Hello, Ada!\"'",
+          "exit": 0, "observed": "body matched {\"message\":\"Hello, Ada!\"}" }
+      ],
+      "evidence": {
+        "network": [{ "method": "GET", "url": "/hello?name=Ada", "status": 200 }],
+        "console": []
+      }
+    },
+    {
+      "feature": "F1 Greeting",
+      "featureFile": "specs/validation/acceptance/F1-greeting.feature",
+      "line": 14,
+      "rule": "A missing or empty name is refused",
+      "scenario": "No name is given",
+      "tags": ["@story-F1.2", "@negative"],
+      "outcome": "passed",
+      "steps": [
+        { "text": "an API caller requests a greeting without a name", "keyword": "When",
+          "command": "curl -s -w '\\nSTATUS:%{http_code}\\n' 'http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http/hello'",
+          "exit": 0, "observed": "HTTP 400, body {\"code\":400,\"description\":\"Query argument name is required, but not found\",\"message\":\"name is required\"}" },
+        { "text": "the request is refused with a 400 error", "keyword": "Then",
+          "command": "curl -s -o /dev/null -w '%{http_code}' 'http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http/hello' | grep -qx 400",
+          "exit": 0, "observed": "400" }
+      ],
+      "evidence": {
+        "network": [{ "method": "GET", "url": "/hello", "status": 400 }],
+        "console": []
+      }
+    },
+    {
+      "feature": "F1 Greeting",
+      "featureFile": "specs/validation/acceptance/F1-greeting.feature",
+      "line": 19,
+      "rule": "A missing or empty name is refused",
+      "scenario": "An empty name is given",
+      "tags": ["@story-F1.2", "@negative"],
+      "outcome": "passed",
+      "steps": [
+        { "text": "an API caller requests a greeting with an empty name", "keyword": "When",
+          "command": "curl -s -w '\\nSTATUS:%{http_code}\\n' 'http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http/hello?name='",
+          "exit": 0, "observed": "HTTP 400, body {\"code\":400,\"message\":\"name is required\"}" },
+        { "text": "the request is refused with a 400 error", "keyword": "Then",
+          "command": "curl -s -o /dev/null -w '%{http_code}' 'http://development-default.openchoreoapis.localhost:19080/s0-p11-1008a-greeter-http/hello?name=' | grep -qx 400",
+          "exit": 0, "observed": "400" }
+      ],
+      "evidence": {
+        "network": [{ "method": "GET", "url": "/hello?name=", "status": 400 }],
+        "console": []
+      }
+    }
+  ]
+}
