@@ -15,3 +15,5 @@ HTTP endpoint.
 - The greeting text is "Hello, {name}!".
 - The response is JSON with the greeting in a `message` field: `{"message": "Hello, Ada!"}`.
 - A missing or empty `name` is rejected with HTTP 400 and a JSON error body: `{"error": "name is required"}`.
+
+ E2E marker p11-1008a.
